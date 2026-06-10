@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ark — Unleash Your Creativity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050508;
+      --surface: #0d0d14;
+      --surface2: #13131d;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f0f5;
+      --muted: #8888aa;
+      --accent: #7c6aff;
+      --accent2: #ff6ac1;
+      --accent3: #6affda;
+      --glow: rgba(124,106,255,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(5,5,8,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 14px; font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-links .active { color: var(--text); }
+
+    .nav-cta {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .btn-ghost {
+      background: none; border: 1px solid var(--border);
+      color: var(--text); padding: 8px 20px; border-radius: 8px;
+      font-size: 13px; cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-primary {
+      background: var(--accent); border: none;
+      color: #fff; padding: 8px 20px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #9480ff; box-shadow: 0 0 20px var(--glow); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 800px; height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,106,255,0.15) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-glow2 {
+      position: absolute;
+      width: 600px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,106,193,0.08) 0%, transparent 70%);
+      top: 30%; right: -100px;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,106,255,0.12);
+      border: 1px solid rgba(124,106,255,0.3);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 12px; font-weight: 500; color: #a89fff;
+      margin-bottom: 32px; position: relative;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.4);} }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 800; line-height: 1.0;
+      letter-spacing: -3px; position: relative;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px; color: var(--muted);
+      max-width: 520px; margin: 20px auto 0;
+      font-weight: 300; line-height: 1.7;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 16px;
+      margin-top: 40px;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn-hero {
+      background: linear-gradient(135deg, var(--accent), #9d6fff);
+      border: none; color: #fff;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 15px; font-weight: 500;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.25s;
+      box-shadow: 0 4px 30px rgba(124,106,255,0.4);
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(124,106,255,0.5); }
+
+    .btn-outline-hero {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text); padding: 14px 32px;
+      border-radius: 10px; font-size: 15px;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.25s;
+    }
+    .btn-outline-hero:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 72px;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px; font-weight: 700;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── FEATURE TABS ── */
+    .section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+    .section,
+    .intro-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section > *,
+    .intro-section > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-bg-video,
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .section-bg-video,
+    .hero-bg {
+      opacity: 0.36;
+      filter: saturate(0.95) contrast(1.05);
+    }
+
+    .section-bg-overlay,
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5,5,8,0.28) 0%, rgba(5,5,8,0.14) 48%, rgba(5,5,8,0.30) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .section-label {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+
+    .section-sub { font-size: 16px; color: var(--muted); max-width: 520px; }
+
+    .tabs {
+      display: flex; gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 6px;
+      margin: 48px 0 40px;
+      width: fit-content;
+    }
+
+    .tab {
+      padding: 10px 24px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      color: var(--muted); border: none; background: none;
+      font-family: inherit;
+    }
+    .tab.active, .tab:hover {
+      background: var(--surface); color: var(--text);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .tab.active { color: var(--accent); }
+
+    /* ── FEATURE CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media(max-width:900px){ .cards-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px){ .cards-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: rgba(13,13,20,0.12);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; overflow: hidden;
+      transition: all 0.3s; position: relative;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .card:hover {
+      border-color: rgba(124,106,255,0.18);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,106,255,0.1);
+    }
+
+    .card-preview {
+      height: 200px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent !important;
+    }
+
+    .card-body { padding: 20px 22px 22px; }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+
+    .card-link {
+      font-size: 12px; font-weight: 500; color: var(--accent);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+      letter-spacing: 0.3px; transition: gap 0.2s;
+    }
+    .card-link:hover { gap: 10px; }
+
+    /* ── PREVIEW ILLUSTRATIONS ── */
+    .preview-video-edit { background: linear-gradient(135deg, #0d0820 0%, #1a0d2e 100%); }
+    .preview-t2v { background: linear-gradient(135deg, #080d1a 0%, #0d1a2e 100%); }
+    .preview-i2v { background: linear-gradient(135deg, #080f12 0%, #0d1f18 100%); }
+    .preview-text { background: linear-gradient(135deg, #12080a 0%, #2e0d15 100%); }
+    .preview-seq { background: linear-gradient(135deg, #090810 0%, #1a1028 100%); }
+    .preview-multi { background: linear-gradient(135deg, #0a0a08 0%, #1a1808 100%); }
+
+    .preview-svg { width: 100%; height: 100%; }
+
+    /* ── INTRODUCING SECTION ── */
+    .intro-section {
+      padding: 100px 24px;
+      background: linear-gradient(180deg, transparent, rgba(124,106,255,0.04), transparent);
+      text-align: center;
+    }
+    .intro-inner { max-width: 1200px; margin: 0 auto; }
+
+    .intro-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(124,106,255,0.2), rgba(255,106,193,0.1));
+      border: 1px solid rgba(124,106,255,0.25);
+      border-radius: 100px; padding: 8px 24px;
+      font-size: 13px; color: #c4b8ff; margin-bottom: 32px;
+    }
+
+    .intro-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 800; letter-spacing: -2px;
+      margin-bottom: 20px; line-height: 1.05;
+    }
+    .intro-title span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro-sub { font-size: 17px; color: var(--muted); max-width: 580px; margin: 0 auto 64px; }
+
+    /* ── FEATURE LIST ── */
+    .feature-list {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: left;
+    }
+    @media(max-width:900px){ .feature-list { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px){ .feature-list { grid-template-columns: 1fr; } }
+
+    .feat-item {
+      background: rgba(13,13,20,0.12);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 28px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .feat-item::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feat-item:hover { border-color: rgba(124,106,255,0.25); transform: translateY(-2px); }
+    .feat-item:hover::before { opacity: 1; }
+
+    .feat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 16px;
+    }
+
+    .feat-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; margin-bottom: 8px;
+    }
+
+    .feat-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 16px; }
+
+    .feat-try {
+      font-size: 12px; color: var(--accent); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-weight: 500; transition: gap 0.2s;
+    }
+    .feat-try:hover { gap: 10px; }
+
+    /* ── APP DOWNLOAD ── */
+    .app-section {
+      padding: 80px 24px;
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 80px;
+    }
+    @media(max-width:800px){ .app-section { flex-direction: column; gap: 40px; } }
+
+    .app-text { flex: 1; }
+    .app-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800; letter-spacing: -1.5px;
+      line-height: 1.1; margin-bottom: 16px;
+    }
+    .app-sub { font-size: 16px; color: var(--muted); margin-bottom: 32px; max-width: 400px; }
+
+    .app-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .app-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 22px;
+      cursor: pointer; transition: all 0.25s;
+      text-decoration: none; color: inherit;
+    }
+    .app-btn:hover { border-color: var(--accent); background: rgba(124,106,255,0.06); }
+
+    .app-btn-icon { font-size: 22px; }
+    .app-btn-text small { display: block; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+    .app-btn-text strong { display: block; font-size: 14px; font-weight: 600; }
+
+    .app-note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+    .app-note a { color: var(--accent); text-decoration: none; }
+
+    .app-visual {
+      flex: 1; display: flex; justify-content: center;
+    }
+
+    .phone-mockup {
+      width: 220px; height: 440px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .phone-screen {
+      position: absolute; inset: 8px;
+      border-radius: 26px; overflow: hidden;
+      background: linear-gradient(160deg, #0d0820, #1a0d2e, #0d1a2e);
+    }
+    .phone-notch {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 6px; background: var(--bg);
+      border-radius: 10px; z-index: 2;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 60px 40px 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr repeat(4, 1fr);
+      gap: 48px; margin-bottom: 48px;
+    }
+    @media(max-width:900px){ .footer-top { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:500px){ .footer-top { grid-template-columns: 1fr; } }
+
+    .footer-brand { }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 800;
+      background: linear-gradient(135deg, #fff 30%, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 12px;
+    }
+    .footer-tagline { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 220px; }
+    .footer-email { font-size: 12px; color: var(--muted); margin-top: 16px; }
+    .footer-email a { color: var(--accent); text-decoration: none; }
+
+    .footer-col h4 {
+      font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); font-weight: 600; margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a {
+      font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--text); }
+
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 32px; border-top: 1px solid var(--border);
+    }
+
+    .footer-copy { font-size: 12px; color: var(--muted); }
+    .footer-copy a { color: var(--accent); text-decoration: none; }
+
+    .footer-owner {
+      font-size: 12px; color: var(--muted);
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .footer-owner span { color: var(--accent); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 1200px; margin: 0 auto;
+      border: none; border-top: 1px solid var(--border);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ── CANVAS BG ── */
+    #bg-canvas {
+      position: fixed; inset: 0;
+      z-index: -1; pointer-events: none;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width: 10px; height: 10px;
+      border-radius: 50%; background: var(--accent);
+      position: fixed; pointer-events: none;
+      z-index: 10000; mix-blend-mode: screen;
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border-radius: 50%; border: 1px solid rgba(124,106,255,0.4);
+      position: fixed; pointer-events: none;
+      z-index: 9998; transition: all 0.15s ease-out;
+    }
+
+    /* Gradient mesh behind hero */
+    .mesh {
+      position: absolute; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 60%, rgba(124,106,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 30%, rgba(255,106,193,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 50% 90%, rgba(106,255,218,0.04) 0%, transparent 60%);
+    }
+
+    /* ── VIDEO EDIT feature illustration ── */
+    .viz-container {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+  
+.hero{
+  position:relative!important;
+  min-height:100vh!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  overflow:hidden!important;
+}
+
+.hero video.hero-bg{
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  opacity:0.38!important;
+  filter:saturate(0.95) contrast(1.05)!important;
+  z-index:-3!important;
+  pointer-events:none!important;
+}
+
+.hero .video-overlay{
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(180deg, rgba(5,5,8,0.35) 0%, rgba(5,5,8,0.18) 45%, rgba(5,5,8,0.32) 100%)!important;
+  z-index:-2!important;
+}
+
+.mesh,
+.hero-glow,
+.hero-glow2{
+  z-index:-1!important;
+}
+
+.hero-badge,
+.hero-title,
+.hero-sub,
+.hero-actions,
+.hero-stats{
+  position:relative!important;
+  z-index:5!important;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BG Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">Ark</a>
+  <ul class="nav-links">
+    <li><a href="#features" class="active">Features</a></li>
+    <li><a href="http://127.0.0.1:8003/">Open Source</a></li>
+    <li><a href="#">API</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Try Now →</button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+
+<video class="hero-bg" autoplay muted loop playsinline>
+  <source src="moon.mp4" type="video/mp4">
+</video>
+<div class="video-overlay"></div>
+
+  <div class="mesh"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Ark 2.7 is now live — Explore what's new
+  </div>
+
+  <h1 class="hero-title">
+    Unleash Your<br/>
+    <span class="line2">Creativity</span>
+  </h1>
+
+  <p class="hero-sub">
+    The most advanced open AI creative platform for video, image, and multimedia generation. Try Ark 2.7 Now.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-hero">Try Ark 2.7 Now</button>
+    <a class="btn-outline-hero" href="http://127.0.0.1:8003/">View Open Source →</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">14B</div>
+      <div class="stat-label">Parameters</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">720P</div>
+      <div class="stat-label">Max Resolution</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12+</div>
+      <div class="stat-label">Languages</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">9</div>
+      <div class="stat-label">Multi-Image Slots</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── IMAGE GENERATION ── -->
+<div style="max-width:1200px;margin:0 auto;padding:0 24px;">
+  <hr class="divider" />
+</div>
+
+<section class="section reveal" id="features">
+  <video class="section-bg-video" autoplay muted loop playsinline>
+    <source src="race.mp4" type="video/mp4">
+  </video>
+  <div class="section-bg-overlay"></div>
+  <div class="section-label">Image Generation</div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div>
+      <h2 class="section-title">Powerful Text Rendering<br/>& Generation</h2>
+      <p class="section-sub">Create stunning images with precise text, support for 12 languages, charts, formulas, and infographics.</p>
+    </div>
+  </div>
+
+  <div class="tabs" id="imgTabs">
+    <button class="tab active" data-tab="text-render">Text Rendering</button>
+    <button class="tab" data-tab="seq">Sequential Image</button>
+    <button class="tab" data-tab="multi">Multi-Image</button>
+  </div>
+
+  <div class="cards-grid" id="imgCards">
+    <!-- Cards injected by JS -->
+  </div>
+</section>
+
+<!-- ── VIDEO EDIT ── -->
+<div style="max-width:1200px;margin:0 auto;padding:0 24px;">
+  <hr class="divider" />
+</div>
+
+<section class="section reveal" id="video-edit">
+  <video class="section-bg-video" autoplay muted loop playsinline>
+    <source src="valcano.mp4" type="video/mp4">
+  </video>
+  <div class="section-bg-overlay"></div>
+  <div class="section-label">Video Edit</div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div>
+      <h2 class="section-title">All-in-One<br/>Video Editing</h2>
+      <p class="section-sub">Recreate visuals, transfer styles, extend time — total creative control over every frame.</p>
+    </div>
+  </div>
+
+  <div class="tabs" id="vidTabs">
+    <button class="tab active" data-tab="vid-edit">Video Edit</button>
+    <button class="tab" data-tab="vid-ref">Video Reference</button>
+  </div>
+
+  <div class="cards-grid" id="vidCards">
+  </div>
+</section>
+
+<!-- ── INTRODUCING ── -->
+<section class="intro-section reveal">
+  <video class="section-bg-video" autoplay muted loop playsinline>
+    <source src="speed.mp4" type="video/mp4">
+  </video>
+  <div class="section-bg-overlay"></div>
+  <div class="intro-inner">
+    <div class="intro-badge">✦ New Release</div>
+    <h2 class="intro-title">Introducing <span>Ark 2.7</span></h2>
+    <p class="intro-sub">The next evolution in AI-powered creativity. More control, more expression, more precision than ever before.</p>
+
+    <div class="feature-list" id="featList">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ── APP DOWNLOAD ── -->
+<div style="max-width:1200px;margin:0 auto;padding:0 24px;">
+  <hr class="divider" />
+</div>
+
+<div class="app-section reveal">
+  <div class="app-text">
+    <div class="section-label">Mobile App</div>
+    <h2 class="app-title">Download Ark<br/>App</h2>
+    <p class="app-sub">Unleash your creativity anytime, anywhere with the official Ark app. Full power of Ark 2.7 in your pocket.</p>
+    <div class="app-buttons">
+      <a class="app-btn" href="#">
+        <span class="app-btn-icon">🍎</span>
+        <div class="app-btn-text">
+          <small>Download on the</small>
+          <strong>App Store</strong>
+        </div>
+      </a>
+      <a class="app-btn" href="#">
+        <span class="app-btn-icon">▶</span>
+        <div class="app-btn-text">
+          <small>Get it on</small>
+          <strong>Google Play</strong>
+        </div>
+      </a>
+    </div>
+    <p class="app-note">App not available in your region? Try our <a href="#">mobile web version</a>.</p>
+  </div>
+
+  <div class="app-visual">
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <svg viewBox="0 0 220 440" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs>
+            <linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7c6aff" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#ff6ac1" stop-opacity="0.3"/>
+            </linearGradient>
+            <linearGradient id="pg2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6affda" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#7c6aff" stop-opacity="0.2"/>
+            </linearGradient>
+          </defs>
+          <!-- Logo -->
+          <text x="110" y="60" text-anchor="middle" font-family="'Syne',sans-serif" font-size="22" font-weight="800" fill="white">Ark</text>
+          <!-- Cards -->
+          <rect x="14" y="80" width="90" height="120" rx="10" fill="url(#pg1)" opacity="0.8"/>
+          <rect x="116" y="80" width="90" height="120" rx="10" fill="url(#pg2)" opacity="0.8"/>
+          <rect x="14" y="214" width="192" height="80" rx="10" fill="rgba(255,255,255,0.05)"/>
+          <text x="24" y="240" font-size="9" fill="rgba(255,255,255,0.5)" font-family="'DM Sans',sans-serif">Recent Creation</text>
+          <rect x="14" y="308" width="90" height="60" rx="8" fill="rgba(124,106,255,0.2)"/>
+          <rect x="116" y="308" width="90" height="60" rx="8" fill="rgba(255,106,193,0.15)"/>
+          <!-- Bottom nav -->
+          <rect x="0" y="390" width="220" height="50" fill="rgba(10,10,20,0.9)"/>
+          <circle cx="44" cy="415" r="12" fill="none" stroke="rgba(124,106,255,0.6)" stroke-width="1.5"/>
+          <circle cx="110" cy="415" r="14" fill="rgba(124,106,255,0.3)"/>
+          <circle cx="176" cy="415" r="12" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">Ark</div>
+        <p class="footer-tagline">Open, powerful AI creative platform for everyone. Generate, edit, and explore without limits.</p>
+        <p class="footer-email"><a href="mailto:ark_ai@service.ark.dev">ark_ai@service.ark.dev</a></p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Ark Create</h4>
+        <ul>
+          <li><a href="#">Features Overview</a></li>
+          <li><a href="#">Try Now</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">User Guide</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Open Source</h4>
+        <ul>
+          <li><a href="#">Latest Advancements</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>API Platform</h4>
+        <ul>
+          <li><a href="#">Platform Overview</a></li>
+          <li><a href="#">API Access</a></li>
+          <li><a href="#">Product Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Usage Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Training Data Summary</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Ark. All rights reserved. Preview only — not for commercial distribution.</p>
+      <p class="footer-owner">Owned by <span>Abhishek Sharma</span></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── CURSOR ──
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor(){
+    cursor.style.left = (mx - 5) + 'px';
+    cursor.style.top = (my - 5) + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = (rx - 18) + 'px';
+    ring.style.top = (ry - 18) + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2.5)';
+      ring.style.transform = 'scale(1.5)';
+      ring.style.borderColor = 'rgba(124,106,255,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = '';
+      ring.style.transform = '';
+      ring.style.borderColor = '';
+    });
+  });
+
+  // ── CANVAS PARTICLES ──
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for(let i = 0; i < 60; i++){
+    particles.push({
+      x: Math.random()*window.innerWidth,
+      y: Math.random()*window.innerHeight,
+      r: Math.random()*1.5+0.3,
+      vx: (Math.random()-0.5)*0.2,
+      vy: (Math.random()-0.5)*0.2,
+      o: Math.random()*0.4+0.1
+    });
+  }
+
+  function drawBg(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(124,106,255,${p.o})`;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0) p.x=W; if(p.x>W) p.x=0;
+      if(p.y<0) p.y=H; if(p.y>H) p.y=0;
+    });
+    requestAnimationFrame(drawBg);
+  }
+  drawBg();
+
+  // ── SCROLL REVEAL ──
+  const revEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  revEls.forEach(el => obs.observe(el));
+
+  // ── IMAGE CARDS DATA ──
+  const imgData = {
+    'text-render': [
+      {
+        title: 'Advanced Text Rendering',
+        desc: 'Supports long-form text across 12 languages. Effortlessly generate charts, formulas, and infographics.',
+        color1: '#12080a', color2: '#2e0d15',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><linearGradient id="tg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6ac1" stop-opacity="0.6"/><stop offset="100%" stop-color="#7c6aff" stop-opacity="0.3"/></linearGradient></defs>
+          <rect x="20" y="30" width="240" height="16" rx="4" fill="rgba(255,255,255,0.12)"/>
+          <rect x="20" y="56" width="180" height="10" rx="4" fill="rgba(255,255,255,0.07)"/>
+          <rect x="20" y="74" width="200" height="10" rx="4" fill="rgba(255,255,255,0.07)"/>
+          <rect x="20" y="92" width="160" height="10" rx="4" fill="rgba(255,255,255,0.07)"/>
+          <rect x="20" y="120" width="80" height="56" rx="8" fill="url(#tg1)" opacity="0.8"/>
+          <rect x="110" y="120" width="55" height="56" rx="8" fill="rgba(124,106,255,0.3)"/>
+          <rect x="175" y="120" width="85" height="56" rx="8" fill="rgba(106,255,218,0.15)"/>
+          <text x="60" y="153" text-anchor="middle" font-size="11" fill="white" font-family="'DM Sans',sans-serif" opacity="0.9">Aa 文</text>
+          <text x="137" y="153" text-anchor="middle" font-size="10" fill="white" font-family="'DM Sans',sans-serif" opacity="0.8">数式</text>
+        </svg>`
+      },
+      {
+        title: 'Precise Color Control',
+        desc: 'Take full command of color distribution to ensure your aesthetic vision is realized exactly as planned.',
+        color1: '#080d1a', color2: '#0d1a2e',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs>
+            <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ff6ac1"/><stop offset="33%" stop-color="#7c6aff"/><stop offset="66%" stop-color="#6affda"/><stop offset="100%" stop-color="#ffda6a"/></linearGradient>
+          </defs>
+          <circle cx="90" cy="95" r="55" fill="none" stroke="url(#cg1)" stroke-width="18" opacity="0.8"/>
+          <circle cx="90" cy="95" r="25" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <rect x="170" y="40" width="90" height="12" rx="6" fill="#ff6ac1" opacity="0.7"/>
+          <rect x="170" y="62" width="65" height="12" rx="6" fill="#7c6aff" opacity="0.7"/>
+          <rect x="170" y="84" width="80" height="12" rx="6" fill="#6affda" opacity="0.7"/>
+          <rect x="170" y="106" width="50" height="12" rx="6" fill="#ffda6a" opacity="0.7"/>
+          <rect x="170" y="130" width="90" height="40" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <circle cx="188" cy="150" r="8" fill="#ff6ac1" opacity="0.8"/>
+          <circle cx="206" cy="150" r="8" fill="#7c6aff" opacity="0.8"/>
+          <circle cx="224" cy="150" r="8" fill="#6affda" opacity="0.8"/>
+          <circle cx="242" cy="150" r="8" fill="#ffda6a" opacity="0.8"/>
+        </svg>`
+      },
+      {
+        title: 'Portrait Customization',
+        desc: 'From bone structure and eye details to subtle facial features, create unique and authentic faces.',
+        color1: '#090810', color2: '#1a1028',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><radialGradient id="fcg" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#a89fff" stop-opacity="0.3"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs>
+          <circle cx="140" cy="85" r="55" fill="url(#fcg)"/>
+          <ellipse cx="140" cy="80" rx="30" ry="36" fill="rgba(168,159,255,0.12)" stroke="rgba(168,159,255,0.25)" stroke-width="1"/>
+          <!-- eyes -->
+          <ellipse cx="127" cy="72" rx="6" ry="4" fill="rgba(124,106,255,0.6)"/>
+          <ellipse cx="153" cy="72" rx="6" ry="4" fill="rgba(124,106,255,0.6)"/>
+          <circle cx="127" cy="72" r="2.5" fill="white" opacity="0.8"/>
+          <circle cx="153" cy="72" r="2.5" fill="white" opacity="0.8"/>
+          <!-- nose -->
+          <path d="M140 78 Q136 86 133 90 M140 78 Q144 86 147 90" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" fill="none"/>
+          <!-- mouth -->
+          <path d="M130 97 Q140 103 150 97" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none"/>
+          <!-- guide lines -->
+          <line x1="100" y1="72" x2="122" y2="72" stroke="rgba(124,106,255,0.4)" stroke-width="0.8" stroke-dasharray="3,2"/>
+          <line x1="158" y1="72" x2="180" y2="72" stroke="rgba(124,106,255,0.4)" stroke-width="0.8" stroke-dasharray="3,2"/>
+          <line x1="140" y1="40" x2="140" y2="65" stroke="rgba(124,106,255,0.3)" stroke-width="0.8" stroke-dasharray="3,2"/>
+          <!-- dots -->
+          <circle cx="127" cy="72" r="2" fill="none" stroke="#7c6aff" stroke-width="1"/>
+          <circle cx="153" cy="72" r="2" fill="none" stroke="#7c6aff" stroke-width="1"/>
+          <circle cx="140" cy="97" r="2" fill="none" stroke="#7c6aff" stroke-width="1"/>
+          <!-- bottom labels -->
+          <rect x="60" y="148" width="50" height="20" rx="4" fill="rgba(124,106,255,0.15)" stroke="rgba(124,106,255,0.3)" stroke-width="0.7"/>
+          <rect x="118" y="148" width="44" height="20" rx="4" fill="rgba(255,106,193,0.15)" stroke="rgba(255,106,193,0.3)" stroke-width="0.7"/>
+          <rect x="170" y="148" width="50" height="20" rx="4" fill="rgba(106,255,218,0.1)" stroke="rgba(106,255,218,0.25)" stroke-width="0.7"/>
+          <text x="85" y="162" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Bone</text>
+          <text x="140" y="162" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Eyes</text>
+          <text x="195" y="162" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Skin</text>
+        </svg>`
+      },
+    ],
+    'seq': [
+      {
+        title: 'Sequential Storytelling',
+        desc: 'Generate up to 12 sequential images with perfect stylistic and subject consistency.',
+        color1: '#090810', color2: '#180d28',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          ${[0,1,2,3].map((i)=>`
+            <rect x="${18+i*65}" y="30" width="55" height="80" rx="8" fill="rgba(124,106,255,${0.1+i*0.05})" stroke="rgba(124,106,255,${0.2+i*0.06})" stroke-width="1"/>
+            <circle cx="${45+i*65}" cy="55" r="12" fill="rgba(124,106,255,${0.2+i*0.1})" opacity="0.8"/>
+            <rect x="${26+i*65}" y="75" width="38" height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
+            <rect x="${26+i*65}" y="88" width="28" height="4" rx="2" fill="rgba(255,255,255,0.07)"/>
+            <text x="${45+i*65}" y="${132}" text-anchor="middle" font-size="9" fill="rgba(124,106,255,0.7)" font-family="sans-serif">${i+1}</text>
+          `).join('')}
+          <path d="M73 70 L83 70" stroke="rgba(124,106,255,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+          <path d="M138 70 L148 70" stroke="rgba(124,106,255,0.5)" stroke-width="1.5"/>
+          <path d="M203 70 L213 70" stroke="rgba(124,106,255,0.5)" stroke-width="1.5"/>
+          <rect x="18" y="148" width="244" height="28" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <text x="140" y="166" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Style & Subject Consistency Across All Frames</text>
+        </svg>`
+      },
+      {
+        title: 'Interactive Editing',
+        desc: 'Use precise box-selection to align your creative intent with the AI at the pixel level.',
+        color1: '#0a0a08', color2: '#1a1808',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <rect x="30" y="25" width="220" height="140" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <rect x="50" y="40" width="80" height="90" rx="6" fill="rgba(124,106,255,0.12)"/>
+          <rect x="145" y="40" width="90" height="40" rx="6" fill="rgba(255,106,193,0.1)"/>
+          <rect x="145" y="90" width="90" height="40" rx="6" fill="rgba(106,255,218,0.08)"/>
+          <!-- selection box -->
+          <rect x="55" y="45" width="70" height="80" rx="4" fill="none" stroke="rgba(124,106,255,0.8)" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <rect x="51" y="41" width="8" height="8" rx="1" fill="#7c6aff"/>
+          <rect x="117" y="41" width="8" height="8" rx="1" fill="#7c6aff"/>
+          <rect x="51" y="117" width="8" height="8" rx="1" fill="#7c6aff"/>
+          <rect x="117" y="117" width="8" height="8" rx="1" fill="#7c6aff"/>
+          <!-- cursor -->
+          <path d="M90 90 L100 110 L104 104 L110 115 L107 117 L101 106 L97 112 Z" fill="white" opacity="0.9"/>
+          <text x="140" y="180" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Pixel-level Selection Control</text>
+        </svg>`
+      },
+      {
+        title: 'Multi-Image Editing',
+        desc: 'Precise edit instruction following. Seamlessly fuse up to 9 images into a single creative vision.',
+        color1: '#0a0a08', color2: '#201a08',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          ${[...Array(9)].map((_,i)=>{
+            const col=i%3, row=Math.floor(i/3);
+            const colors=['rgba(124,106,255,0.25)','rgba(255,106,193,0.2)','rgba(106,255,218,0.18)','rgba(255,218,106,0.15)'];
+            return `<rect x="${16+col*80}" y="${20+row*56}" width="68" height="46" rx="7" fill="${colors[i%4]}" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>`;
+          }).join('')}
+          <rect x="80" y="88" width="30" height="4" rx="2" fill="rgba(124,106,255,0.5)"/>
+          <text x="140" y="188" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Fuse up to 9 images into one vision</text>
+        </svg>`
+      },
+    ],
+    'multi': [
+      {
+        title: 'Multi-Image Consistency',
+        desc: 'Maintain consistent style, subject, and tone across multiple generated images in a single workflow.',
+        color1: '#081008', color2: '#0d1a10',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><linearGradient id="mcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6affda" stop-opacity="0.5"/><stop offset="100%" stop-color="#7c6aff" stop-opacity="0.3"/></linearGradient></defs>
+          <rect x="20" y="30" width="70" height="95" rx="8" fill="url(#mcg)" opacity="0.7"/>
+          <rect x="105" y="30" width="70" height="95" rx="8" fill="url(#mcg)" opacity="0.55"/>
+          <rect x="190" y="30" width="70" height="95" rx="8" fill="url(#mcg)" opacity="0.4"/>
+          <path d="M90 77 Q140 60 190 77" stroke="rgba(106,255,218,0.4)" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+          <circle cx="140" cy="62" r="5" fill="rgba(106,255,218,0.6)"/>
+          <rect x="20" y="140" width="240" height="20" rx="5" fill="rgba(255,255,255,0.03)" stroke="rgba(106,255,218,0.15)" stroke-width="1"/>
+          <text x="140" y="154" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Consistent style + subject across all outputs</text>
+        </svg>`
+      },
+    ]
+  };
+
+  const vidData = {
+    'vid-edit': [
+      {
+        title: 'Instruction Video Editing',
+        desc: 'Recreate visuals, plots, and scenes with text prompts and precise multi-image guidance.',
+        color1: '#0d0820', color2: '#1a0d2e',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><linearGradient id="veg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c6aff" stop-opacity="0.5"/><stop offset="100%" stop-color="#ff6ac1" stop-opacity="0.3"/></linearGradient></defs>
+          <rect x="20" y="25" width="112" height="70" rx="8" fill="rgba(124,106,255,0.15)" stroke="rgba(124,106,255,0.3)" stroke-width="1"/>
+          <text x="76" y="65" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Original</text>
+          <rect x="148" y="25" width="112" height="70" rx="8" fill="url(#veg)" opacity="0.8"/>
+          <text x="204" y="65" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Edited</text>
+          <path d="M135 60 L146 60" stroke="rgba(124,106,255,0.7)" stroke-width="2" marker-end="url(#a2)"/>
+          <circle cx="140" cy="60" r="0" fill="none"/>
+          <text x="140" y="58" text-anchor="middle" font-size="14" fill="rgba(124,106,255,0.8)">→</text>
+          <rect x="20" y="112" width="240" height="22" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <text x="36" y="127" font-size="9" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Prompt: "Change lighting to golden hour…"</text>
+          <rect x="20" y="145" width="240" height="30" rx="6" fill="rgba(124,106,255,0.08)"/>
+          <rect x="28" y="153" width="60" height="8" rx="3" fill="rgba(124,106,255,0.4)"/>
+          <rect x="96" y="153" width="40" height="8" rx="3" fill="rgba(255,106,193,0.3)"/>
+          <rect x="144" y="153" width="50" height="8" rx="3" fill="rgba(106,255,218,0.2)"/>
+        </svg>`
+      },
+      {
+        title: 'Creative Video Transfer',
+        desc: 'One-click replication of dynamics, from complex character motions to cinematic camera work.',
+        color1: '#080d1a', color2: '#0d1a2e',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><linearGradient id="ctg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6affda" stop-opacity="0.4"/><stop offset="100%" stop-color="#7c6aff" stop-opacity="0.3"/></linearGradient></defs>
+          <!-- film strips -->
+          <rect x="15" y="60" width="100" height="60" rx="6" fill="rgba(106,255,218,0.12)" stroke="rgba(106,255,218,0.25)" stroke-width="1"/>
+          ${[0,1,2].map(i=>`<rect x="${23+i*31}" y="67" width="22" height="15" rx="3" fill="rgba(106,255,218,0.2)"/>
+          <rect x="${23+i*31}" y="90" width="22" height="15" rx="3" fill="rgba(106,255,218,0.15)"/>`).join('')}
+          <rect x="165" y="60" width="100" height="60" rx="6" fill="rgba(124,106,255,0.12)" stroke="rgba(124,106,255,0.25)" stroke-width="1"/>
+          ${[0,1,2].map(i=>`<rect x="${173+i*31}" y="67" width="22" height="15" rx="3" fill="rgba(124,106,255,0.2)"/>
+          <rect x="${173+i*31}" y="90" width="22" height="15" rx="3" fill="rgba(124,106,255,0.15)"/>`).join('')}
+          <!-- arrow -->
+          <path d="M118 90 C135 82, 145 82, 162 90" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+          <text x="140" y="87" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.5)">→</text>
+          <text x="65" y="145" text-anchor="middle" font-size="9" fill="rgba(106,255,218,0.5)" font-family="sans-serif">Source Motion</text>
+          <text x="215" y="145" text-anchor="middle" font-size="9" fill="rgba(124,106,255,0.5)" font-family="sans-serif">Transferred</text>
+          <rect x="60" y="160" width="160" height="18" rx="5" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <text x="140" y="173" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.25)" font-family="sans-serif">One-click style & motion transfer</text>
+        </svg>`
+      },
+      {
+        title: 'Seamless Time Extension',
+        desc: 'Master the flow of time with frame-guided continuation and infinite video outpainting.',
+        color1: '#080f12', color2: '#0d1f18',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs>
+            <linearGradient id="teg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#6affda" stop-opacity="0.6"/>
+              <stop offset="60%" stop-color="#7c6aff" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="rgba(124,106,255,0)" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <!-- timeline track -->
+          <rect x="20" y="88" width="240" height="24" rx="5" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <rect x="20" y="88" width="140" height="24" rx="5" fill="url(#teg)" opacity="0.8"/>
+          <!-- keyframes -->
+          ${[20,65,110,155].map(x=>`<circle cx="${x+10}" cy="100" r="5" fill="rgba(106,255,218,${x<156?0.8:0.3})"/>`).join('')}
+          <circle cx="200" cy="100" r="5" fill="rgba(124,106,255,0.3)" stroke="rgba(124,106,255,0.6)" stroke-width="1" stroke-dasharray="2,1"/>
+          <circle cx="240" cy="100" r="5" fill="rgba(124,106,255,0.15)" stroke="rgba(124,106,255,0.4)" stroke-width="1" stroke-dasharray="2,1"/>
+          <!-- extend arrow -->
+          <text x="175" y="76" text-anchor="middle" font-size="8" fill="rgba(124,106,255,0.6)" font-family="sans-serif">Extending →</text>
+          <path d="M155 82 Q175 70 195 82" stroke="rgba(124,106,255,0.4)" stroke-width="1" fill="none"/>
+          <text x="140" y="145" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.25)" font-family="sans-serif">Frame-guided Infinite Outpainting</text>
+          <rect x="60" y="155" width="160" height="24" rx="5" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <rect x="60" y="155" width="100" height="24" rx="5" fill="rgba(106,255,218,0.08)"/>
+          <text x="108" y="171" text-anchor="middle" font-size="8" fill="rgba(106,255,218,0.5)" font-family="sans-serif">5s → ∞</text>
+        </svg>`
+      },
+    ],
+    'vid-ref': [
+      {
+        title: 'Reference to Cinematic',
+        desc: 'Use reference images or clips to guide generation toward cinematic quality output.',
+        color1: '#0d0820', color2: '#1a0d2e',
+        svg: `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs><linearGradient id="rcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6ac1" stop-opacity="0.4"/><stop offset="100%" stop-color="#7c6aff" stop-opacity="0.5"/></linearGradient></defs>
+          <!-- ref frame -->
+          <rect x="20" y="40" width="80" height="60" rx="7" fill="rgba(255,106,193,0.12)" stroke="rgba(255,106,193,0.3)" stroke-width="1"/>
+          <text x="60" y="73" text-anchor="middle" font-size="9" fill="rgba(255,106,193,0.5)" font-family="sans-serif">Reference</text>
+          <!-- cinematic output -->
+          <rect x="120" y="25" width="140" height="100" rx="9" fill="url(#rcg)" opacity="0.8"/>
+          <text x="190" y="79" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Cinematic Output</text>
+          <!-- letterbox bars -->
+          <rect x="120" y="25" width="140" height="12" rx="3" fill="rgba(0,0,0,0.5)"/>
+          <rect x="120" y="113" width="140" height="12" rx="3" fill="rgba(0,0,0,0.5)"/>
+          <!-- arrow -->
+          <path d="M103 70 L118 70" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <text x="110" y="68" font-size="12" fill="rgba(255,255,255,0.5)">→</text>
+          <text x="140" y="162" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.25)" font-family="sans-serif">Any reference → Cinematic quality video</text>
+        </svg>`
+      },
+    ]
+  };
+
+  const featureListData = [
+    { icon: '✏️', bg: 'rgba(124,106,255,0.15)', title: 'Instruction Video Editing', desc: 'Recreate visuals, plots, and scenes with text prompts and precise multi-image guidance.' },
+    { icon: '🎬', bg: 'rgba(255,106,193,0.12)', title: 'Creative Video Transfer', desc: 'One-click replication of dynamics, from complex character motions to cinematic camera work.' },
+    { icon: '⏱️', bg: 'rgba(106,255,218,0.1)', title: 'Seamless Time Extension', desc: 'Master the flow of time with frame-guided continuation and infinite video outpainting.' },
+    { icon: '👤', bg: 'rgba(255,218,106,0.1)', title: 'Portrait Customization', desc: 'From bone structure and eye details to subtle facial features, create unique and authentic faces.' },
+    { icon: '🔤', bg: 'rgba(124,106,255,0.15)', title: 'Advanced Text Rendering', desc: 'Supports long-form text across 12 languages. Effortlessly generate charts, formulas, and infographics.' },
+    { icon: '🎨', bg: 'rgba(255,106,193,0.12)', title: 'Precise Color Control', desc: 'Take full command of color distribution to ensure your aesthetic vision is realized exactly as planned.' },
+    { icon: '🖼️', bg: 'rgba(106,255,218,0.1)', title: 'Multi-Image Editing', desc: 'Precise edit instruction following. Seamlessly fuse up to 9 images into a single creative vision.' },
+    { icon: '📖', bg: 'rgba(255,218,106,0.1)', title: 'Sequential Storytelling', desc: 'Generate up to 12 sequential images with perfect stylistic and subject consistency.' },
+    { icon: '🔲', bg: 'rgba(124,106,255,0.15)', title: 'Interactive Editing', desc: 'Use precise box-selection to align your creative intent with the AI at the pixel level.' },
+  ];
+
+  function renderCards(container, data) {
+    container.innerHTML = '';
+    data.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="card-preview" style="background:linear-gradient(135deg,${d.color1} 0%,${d.color2} 100%)">
+          <div class="viz-container">${d.svg}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${d.title}</div>
+          <div class="card-desc">${d.desc}</div>
+          <a class="card-link" href="#">Try Now →</a>
+        </div>`;
+      container.appendChild(el);
+    });
+  }
+
+  function renderFeatureList() {
+    const fl = document.getElementById('featList');
+    fl.innerHTML = '';
+    featureListData.forEach(f => {
+      const el = document.createElement('div');
+      el.className = 'feat-item reveal';
+      el.innerHTML = `
+        <div class="feat-icon" style="background:${f.bg}">${f.icon}</div>
+        <div class="feat-title">${f.title}</div>
+        <div class="feat-desc">${f.desc}</div>
+        <a class="feat-try" href="#">Try Now →</a>`;
+      fl.appendChild(el);
+      obs.observe(el);
+    });
+  }
+
+  // Init img cards
+  renderCards(document.getElementById('imgCards'), imgData['text-render']);
+
+  document.querySelectorAll('#imgTabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#imgTabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderCards(document.getElementById('imgCards'), imgData[tab.dataset.tab] || imgData['text-render']);
+    });
+  });
+
+  // Init vid cards
+  renderCards(document.getElementById('vidCards'), vidData['vid-edit']);
+
+  document.querySelectorAll('#vidTabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#vidTabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderCards(document.getElementById('vidCards'), vidData[tab.dataset.tab] || vidData['vid-edit']);
+    });
+  });
+
+  renderFeatureList();
+
+  // Nav active on scroll
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.querySelector('nav').style.background = y > 20
+      ? 'rgba(5,5,8,0.85)' : 'rgba(5,5,8,0.7)';
+  });
+
+</script>
+</body>
+</html>
